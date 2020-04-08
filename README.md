@@ -6,7 +6,7 @@
     Other options @ http://michaelfulcher.yolasite.com/other-crypto-donation-options.php
 
 ## Description:
-Save time with creating batches of folders with this script.
+Save time by creating batches of folders with this script.
 
 ### Required Packages:
 progressbar
