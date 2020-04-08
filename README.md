@@ -7,6 +7,7 @@
 
 ## Description:
 Save time by creating batches of folders with this script.
+This script has a user interface that enable creation of multiple batches of folders. And can detect when a sub folder in the process is missing and create those missing folders.
 
 ### Required Packages:
 progressbar
