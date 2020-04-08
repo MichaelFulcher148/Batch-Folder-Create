@@ -1,4 +1,4 @@
-# Batch-Folder-Create
+# Batch-Folder-Creater
 
     Send Donations to (Suggested donation amount: $1.50USD) -
     PayPal: mjfulcher58@gmail.com
