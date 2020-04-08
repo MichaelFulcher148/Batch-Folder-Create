@@ -1,10 +1,10 @@
 """Batch Folder Create
     By Michael Fulcher
 
-    Send Donations to -
+    Send Donations to (recommended $1.50USD) -
     PayPal: mjfulcher58@gmail.com
     Bitcoin: 3EjKSBQka7rHaLqKMXKZ8t7sHDa546GWAd
-    Other options @ http://michaelfulcher.yolasite.com/other-crypto-donation-options.php
+    Other options @ http://michaelfulcher.yolasite.com/
 """
 
 #create series of folders
