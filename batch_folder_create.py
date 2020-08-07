@@ -39,6 +39,8 @@ def pick_destination():
         destination_folder = input('Enter Folder (Full path) where you would like to create your new folders:')
         if destination_folder[-1] == '\\':
             destination_folder = destination_folder[:-1]
+        if destination_folder[0] == ' ' or destination_folder[-1] == ' ':
+            destination_folder = remove_spaces(destination_folder)
         if exists(destination_folder) == True:
             print("Found: " + destination_folder)
             return destination_folder
@@ -112,6 +114,14 @@ def add_seperator(seperator, a_name):
         for i in countup(list_length):
             a_name = a_name[:spaces_list[job_pos][i]] + seperator + a_name[spaces_list[job_pos][i] + 1:] ##Replace spaces with seperator char.
     return a_name
+
+def remove_spaces(a_string):
+    if a_string[0] == ' ':
+        a_string = a_string[1:]
+    i = len(a_string) - 1
+    while a_string[i] == ' ':
+        i -= 1
+    return a_string[:i]
 
 def pick_common_name(seperator):
     global spaces_list, job_pos
@@ -237,6 +247,7 @@ if __name__ == '__main__':
     global use_progress_bar, ignore_FileExistsError, w, success, folder_existed_count, end_num, start_num, spaces_list, job_pos
     log_tools.script_id = 'Create_Numbered_Folder_Series'
     log_tools.run_date = time.strftime('%d-%m-%Y', time.localtime())
+    log_tools.initialize(False)
     del time
     job_pos = 0
 
