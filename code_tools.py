@@ -1,5 +1,3 @@
-from os import makedirs
-
 def countdown(i):
     while i >= 0:
         yield i
@@ -11,27 +9,32 @@ def countup(i):
         yield f
         f += 1
 
+def range_countup(start, end):
+    while start < end:
+        yield start
+        start += 1
+
 def trim(data):
-    dataLength = len(data)
+    data_length = len(data)
     i = 0
-    notWantedChars = ['\t', ' ', '\r'] #\n and \U+000B been tried
-    while i < dataLength:
+    not_wanted_chars = ['\t', ' ', '\r']  # \n and \U+000B been tried
+    while i < data_length:
         length = len(data[i])
         if length == 0:
             i += 1
             continue
-        if data[i][0] in notWantedChars:
-            notWantedCharCount = 1
+        if data[i][0] in not_wanted_chars:
+            not_wanted_char_count = 1
             x = 1
             while x < length:
-                if data[i][x] in notWantedChars:
-                    notWantedCharCount += 1
+                if data[i][x] in not_wanted_chars:
+                    not_wanted_char_count += 1
                 else:
                     break
                 x += 1
-            if notWantedCharCount == length:
+            if not_wanted_char_count == length:
                 data.pop(i)
-                dataLength -= 1
+                data_length -= 1
                 continue
         if data[i][-1] == '\r':
             data[i] = data[i][:-1]
