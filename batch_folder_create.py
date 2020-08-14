@@ -47,7 +47,7 @@ def pick_destination():
             return destination_folder
         else:
             if exists(destination_folder[0:3]):  # check that drive exists
-                print("\nFolder (" + destination_folder + ") does not exist.")
+                print("\nFolder ({}) does not exist.".format(destination_folder))
                 n_seperator = input("Would you like to create this folder?\nNote: spaces at the begining and end of folder names cannot be used, they will be removed.\n'Y' for Yes, any other key to start over:")
                 if n_seperator in 'yY':
                     path_list = destination_folder.split('\\')
@@ -64,7 +64,7 @@ def pick_destination():
                         if not folder_name_validity_check(path_list[w]):
                             return destination_folder
                         else:
-                            destination_folder += '\\' + path_list[w]
+                            destination_folder += '\\{}'.format(path_list[w])
                             if exists(destination_folder):
                                 folder_existed_count += 1
                                 w += 1
@@ -72,7 +72,7 @@ def pick_destination():
                                 if w == start_num:
                                     ignore_FileExistsError = True
                                 if not ignore_FileExistsError:
-                                    print("\nFolder " + destination_folder + " does not exist.")
+                                    print("\nFolder {} does not exist.".format(destination_folder))
                                     n_seperator = input("Do you want to create?\n 'Y' for Yes, 'a' for create full path, any other command will restart the programe:")
                                     if n_seperator in 'yY':
                                         makedir_n_iterate(destination_folder)
@@ -87,8 +87,8 @@ def pick_destination():
                                     makedir_n_iterate(destination_folder)
                                     log_tools.add_to_txt_log('Created ' + destination_folder, add_date = True)
                     if w == length:
-                        print("Created " + str(success) + " folders, " + str(folder_existed_count) + " Folders existed prior.")
-                        print("Destination folder " + destination_folder + " Created.")
+                        print("Created {} folders, {} Folders existed prior.".format(str(success), str(folder_existed_count)))
+                        print("Destination folder {} Created.".format(destination_folder))
                         return destination_folder
             else:
                 print("Drive does not exist.")
@@ -100,7 +100,7 @@ def pick_seperator():
             return "_"
         else:
             if not folder_name_char_check(n_seperator):
-                print("\nCharacter " + n_seperator + " is not a valid character for files names.")
+                print("\nCharacter {} is not a valid character for files names.".format(n_seperator))
                 continue
             else:
                 return n_seperator
@@ -220,19 +220,19 @@ def make_dir(destination):
         folder_existed_count += 1
         if not ignore_FileExistsError:
             while 1:
-                n_seperator = input("\nFolder " + destination + " already exists.\n\t'A' - Ignore all these Errors and skip creation of prior existing folders.\n\t'S' - Skip Just this one.\n\t'X' - eXit the program:")
+                n_seperator = input("\nFolder {} already exists.\n\t'A' - Ignore all these Errors and skip creation of prior existing folders.\n\t'S' - Skip Just this one.\n\t'X' - eXit the program:".format(destination))
                 if n_seperator in 'Aa':
-                    log_tools.add_to_txt_log('Folder ' + destination + ' exists and creation skipped (Ignore all activated).', add_date=True)
+                    log_tools.add_to_txt_log('Folder {} exists and creation skipped (Ignore all activated).'.format(destination), add_date=True)
                     ignore_FileExistsError = True
                     return
                 elif n_seperator in 'Ss':
-                    log_tools.add_to_txt_log('Folder ' + destination + ' exists and creation skipped (one time).', add_date=True)
+                    log_tools.add_to_txt_log('Folder {} exists and creation skipped (one time).'.format(destination), add_date=True)
                     return
                 elif n_seperator in 'Xx':
-                    log_tools.add_to_txt_log('Folder ' + destination + ' exists and user quit.', add_date=True)
+                    log_tools.add_to_txt_log('Folder {} exists and user quit.'.format(destination), add_date=True)
                     raise SystemExit
         else:
-            log_tools.add_to_txt_log('Folder ' + destination + ' exists and creation automatically skipped.', add_date=True)
+            log_tools.add_to_txt_log('Folder {} exists and creation automatically skipped.'.format(destination), add_date=True)
 
 def make_numbered_dir(a_folder):
     global pos, start_num, start_num_string, use_progress_bar
@@ -303,25 +303,19 @@ if __name__ == '__main__':
             job_list_length = len(end_num_string)
             output += '\nJob #\tCommon Name\tDestination:\tStart:\tEnd\te.g.:'
             for i in countup(job_list_length):
-                output += '\n' + str(i + 1) + '\t' + common_name[i] + '\t\t' + destination_folder[i] + '\t' + \
-                          start_num_string[i] + '\t' + end_num_string[i] + '\t' + destination_folder[i] + common_name[i]
-                output += last_chars_of_name(i)
+                output += '\n{}\t{}\t\t{}\t{}\t{}\t{}{}{}'.format(str(i + 1), common_name[i], destination_folder[i], start_num_string[i], end_num_string[i], destination_folder[i], common_name[i], last_chars_of_name(i))
         else:
             job_list_length = 1
             output += '\nFolders'
             if common_name[job_pos] != '':
                 output += " named " + common_name[job_pos]
-            output += " from " + start_num_string[job_pos] + " to " + end_num_string[job_pos] + " inside Folder " + \
-                      destination_folder[job_pos] + ".\n\t e.g. " + destination_folder[job_pos] + common_name[job_pos]
-            output += last_chars_of_name(job_pos)
+            output += " from {} to {} inside Folder {}.\n\t e.g. {}{}{}".format(start_num_string[job_pos], end_num_string[job_pos], destination_folder[job_pos], destination_folder[job_pos], common_name[job_pos], last_chars_of_name(job_pos))
         output += "\n\nCommands:\n\t'p' - Change the seperator character.\n\t'n' - Change the common name.\n\t's' - Change start number.\n\t'f' - Change end number."
         if batch_mode:
-            output += "\n\t'b' - Add another job."
-            output += "\n\t'r' - Remove a job."
+            output += "\n\t'b' - Add another job.\n\t'r' - Remove a job."
         else:
             output += "\n\t'b' - Enter batch creation mode."
-        n_seperator = input(
-            output + "\n\t'e' - Enable/Dissable seperator at end.\n\t'z' - Enable/Dissable leading zero.\n\t'c' - Confirm current settings and Create Dolders.\n\t'x' - eXit the program\nThen 'Enter' to confirm:")
+        n_seperator = input("{}\n\t'e' - Enable/Dissable seperator at end.\n\t'z' - Enable/Dissable leading zero.\n\t'c' - Confirm current settings and Create Dolders.\n\t'x' - eXit the program\nThen 'Enter' to confirm:".format(output))
         if n_seperator in 'cC':
             break
         elif n_seperator in 'eE':
@@ -428,14 +422,14 @@ if __name__ == '__main__':
                 if working_num_length < length:
                     start_num_string[i] = '0' * (length - working_num_length) + start_num_string[i]
             log_tools.add_to_txt_log(
-                'Completed process for ' + destination_folder[job_pos] + ' folders ' + start_str + ' to ' + str(
-                    end_num[job_pos]), add_date=True)
+                'Completed process for {} folders {} to {}'.format(destination_folder[job_pos], start_str, str(
+                    end_num[job_pos])), add_date=True)
         else:
             start_str = str(start_num[job_pos])
             while start_num[i] <= end_num[i]:
                 make_numbered_dir(destination_folder[i] + start_num_string[i])
             log_tools.add_to_txt_log(
-                'Completed process for ' + destination_folder[job_pos] + ' folders ' + start_str + ' to ' + str(
-                    end_num[job_pos]), add_date=True)
+                'Completed process for {} folders {} to {}'.format(destination_folder[job_pos], start_str,  str(
+                    end_num[job_pos])), add_date=True)
 
-    log_tools.tprint("Created " + str(success) + " folders, " + str(folder_existed_count) + " Folders existed prior.")
+    log_tools.tprint("Created {} folders, {} Folders existed prior.".format(str(success), str(folder_existed_count)))
