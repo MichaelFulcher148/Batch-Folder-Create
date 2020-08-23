@@ -16,25 +16,25 @@ import log_tools
 
 # create series of folders
 
-def folder_name_validity_check(a_name):
+def folder_name_validity_check(a_name: str) -> bool:
     if len(a_name) > 0 and a_name[0] != ' ' and folder_name_char_check(a_name) == True:
         return True
     else:
         return False
 
-def name_spaces_check(a_name):
+def name_spaces_check(a_name: str) -> bool:
     if len(a_name) > 1 and (a_name[0] == ' ' or a_name[-1] == ' '):
         return False
     else:
         return True
 
-def makedir_n_iterate(a_folder_name):
+def makedir_n_iterate(a_folder_name: str) -> None:
     global w, success
     makedirs(a_folder_name)
     w += 1
     success += 1
 
-def pick_destination():
+def pick_destination() -> str:
     global w, success, folder_existed_count, ignore_FileExistsError
     while 1:
         destination_folder = input('Enter Folder (Full path) where you would like to create your new folders:')
@@ -93,7 +93,7 @@ def pick_destination():
             else:
                 print("Drive does not exist.")
 
-def pick_seperator():
+def pick_seperator() -> str:
     while 1:
         n_seperator = input('\nEnter word seperator.\n"Space" may be used. But name cannot contain only "Spaces".\nPress "Enter" for default "_" (Underscore) or you want names to contain only numbers:')
         if n_seperator == '':
@@ -105,10 +105,10 @@ def pick_seperator():
             else:
                 return n_seperator
 
-def blank_name_msg():
+def blank_name_msg() -> str:
     return input("Name entered is blank, this will lead to your folder names being only numbers.\nPress 'Enter' if this is OK.\nEnter any other command to change the common name of Folders:")
 
-def add_seperator(seperator, a_name):
+def add_seperator(seperator: str, a_name: str) -> str:
     global spaces_list, job_pos
     list_length = len(spaces_list[job_pos])
     if list_length > 0:
@@ -116,7 +116,7 @@ def add_seperator(seperator, a_name):
             a_name = a_name[:spaces_list[job_pos][i]] + seperator + a_name[spaces_list[job_pos][i] + 1:]  # Replace spaces with seperator char.
     return a_name
 
-def remove_spaces(a_string):
+def remove_spaces(a_string: str) -> str:
     if a_string[0] == ' ':
         a_string = a_string[1:]
     i = len(a_string) - 1
@@ -124,7 +124,7 @@ def remove_spaces(a_string):
         i -= 1
     return a_string[:i]
 
-def pick_common_name(seperator):
+def pick_common_name(seperator: str) -> str:
     global spaces_list, job_pos
     while 1:
         common_name = input("\n'Spaces' will be replace with word seperator character, Can be left blank.\nBeginning and End characters cannot be 'Spaces'\nEnter common name of Folders:")
@@ -148,7 +148,7 @@ def pick_common_name(seperator):
             if blank_name_msg() == '':
                 return common_name
 
-def convert_string_to_int(a_num_str, a_string):
+def convert_string_to_int(a_num_str: str, a_string: str) -> int:
     try:
         new_int = int(a_num_str)
         if new_int < 0:
@@ -159,7 +159,7 @@ def convert_string_to_int(a_num_str, a_string):
         return -1
     return new_int
 
-def pick_start_num():
+def pick_start_num() -> int:
     while 1:
         user_input = input('\nStart number:\n("Enter" for default "1"):')
         if user_input == '':
@@ -181,14 +181,14 @@ def pick_end_num():
         else:
             return end_num_int, end_num_string
 
-def generate_start_num_string():
+def generate_start_num_string() -> str:
     global end_num_string
     start_num_string = str(start_num[job_pos])
     working_num_length = len(start_num_string)
     length = len(end_num_string[job_pos])
     return '0' * (length - working_num_length) + start_num_string
 
-def check_job_num():
+def check_job_num() -> bool:
     global job_pos, job_list_length
     n_seperator = input("Select Job.\nEnter Job number:")
     job_pos = convert_string_to_int(n_seperator, 'Job')
@@ -203,14 +203,14 @@ def check_job_num():
             job_pos -= 1
             return True
 
-def last_chars_of_name(pos):
+def last_chars_of_name(pos: int) -> str:
     global seperator, add_seperator_at_end, start_num_string
     output = ''
     if add_seperator_at_end[pos]:
         output += seperator[pos]
     return output + start_num_string[pos]
 
-def make_dir(destination):
+def make_dir(destination: str) -> None:
     global ignore_FileExistsError, success, folder_existed_count
     try:
         makedirs(destination)
@@ -234,7 +234,7 @@ def make_dir(destination):
         else:
             log_tools.add_to_txt_log('Folder {} exists and creation automatically skipped.'.format(destination), add_date=True)
 
-def make_numbered_dir(a_folder):
+def make_numbered_dir(a_folder: str) -> None:
     global pos, start_num, start_num_string, use_progress_bar
     make_dir(a_folder)
     if use_progress_bar:
