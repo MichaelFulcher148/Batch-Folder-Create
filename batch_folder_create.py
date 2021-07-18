@@ -1,9 +1,10 @@
-from code_tools import countup, folder_name_char_check
+from tools.generators import countup
+from tools.string import folder_name_char_check
 from os.path import exists
 from os import makedirs
 from sys import modules
 import time
-import log_tools
+from tools import log_tools, progressbar_control
 
 """Batch Folder Create
     By Michael Fulcher
@@ -17,7 +18,7 @@ import log_tools
 # create series of folders
 
 def folder_name_validity_check(a_name: str) -> bool:
-    if len(a_name) > 0 and a_name[0] != ' ' and folder_name_char_check(a_name) == True:
+    if len(a_name) > 0 and a_name[0] != ' ' and folder_name_char_check(a_name):
         return True
     else:
         return False
@@ -41,15 +42,15 @@ def pick_destination() -> str:
         if destination_folder[-1] == '\\':
             destination_folder = destination_folder[:-1]
         if destination_folder[0] == ' ' or destination_folder[-1] == ' ':
-            destination_folder = remove_spaces(destination_folder)
+            destination_folder = destination_folder.strip()
         if exists(destination_folder):
             print("Found: " + destination_folder)
             return destination_folder
         else:
             if exists(destination_folder[0:3]):  # check that drive exists
                 print("\nFolder ({}) does not exist.".format(destination_folder))
-                n_seperator = input("Would you like to create this folder?\nNote: spaces at the begining and end of folder names cannot be used, they will be removed.\n'Y' for Yes, any other key to start over:")
-                if n_seperator in 'yY':
+                n_seperator = input("Would you like to create this folder?\nNote: spaces at the begining and end of folder names cannot be used, they will be removed.\n'Y' for Yes, any other key to start over:").upper()
+                if n_seperator == 'Y':
                     path_list = destination_folder.split('\\')
                     length = len(path_list)
                     w = 1
@@ -60,7 +61,7 @@ def pick_destination() -> str:
                     folder_existed_count = 0
                     while w < length:
                         if not name_spaces_check(path_list[w]):
-                            path_list[w] = remove_spaces(path_list[w])
+                            path_list[w] = path_list[w].strip()
                         if not folder_name_validity_check(path_list[w]):
                             return destination_folder
                         else:
@@ -73,11 +74,11 @@ def pick_destination() -> str:
                                     ignore_FileExistsError = True
                                 if not ignore_FileExistsError:
                                     print("\nFolder {} does not exist.".format(destination_folder))
-                                    n_seperator = input("Do you want to create?\n 'Y' for Yes, 'a' for create full path, any other command will restart the programe:")
-                                    if n_seperator in 'yY':
+                                    n_seperator = input("Do you want to create?\n 'Y' for Yes, 'a' for create full path, any other command will restart the programe:").upper()
+                                    if n_seperator == 'Y':
                                         makedir_n_iterate(destination_folder)
                                         log_tools.add_to_txt_log('Created ' + destination_folder, add_date = True)
-                                    elif n_seperator in 'aA':
+                                    elif n_seperator == 'A':
                                         makedir_n_iterate(destination_folder)
                                         log_tools.add_to_txt_log('Created ' + destination_folder, add_date = True)
                                         ignore_FileExistsError = True
@@ -116,13 +117,13 @@ def add_seperator(seperator: str, a_name: str) -> str:
             a_name = a_name[:spaces_list[job_pos][i]] + seperator + a_name[spaces_list[job_pos][i] + 1:]  # Replace spaces with seperator char.
     return a_name
 
-def remove_spaces(a_string: str) -> str:
-    if a_string[0] == ' ':
-        a_string = a_string[1:]
-    i = len(a_string) - 1
-    while a_string[i] == ' ':
-        i -= 1
-    return a_string[:i]
+# def remove_spaces(a_string: str) -> str:
+#     if a_string[0] == ' ':
+#         a_string = a_string[1:]
+#     i = len(a_string) - 1
+#     while a_string[i] == ' ':
+#         i -= 1
+#     return a_string[:i]
 
 def pick_common_name(seperator: str) -> str:
     global spaces_list, job_pos
@@ -131,7 +132,7 @@ def pick_common_name(seperator: str) -> str:
         length = len(common_name)
         if length > 0:
             if common_name[0] == " " or common_name[-1] == " ":
-                common_name = remove_spaces(common_name)
+                common_name = common_name.strip()
             if common_name[0] != ' ':
                 if not folder_name_char_check(common_name):
                     continue
@@ -220,15 +221,15 @@ def make_dir(destination: str) -> None:
         folder_existed_count += 1
         if not ignore_FileExistsError:
             while 1:
-                n_seperator = input("\nFolder {} already exists.\n\t'A' - Ignore all these Errors and skip creation of prior existing folders.\n\t'S' - Skip Just this one.\n\t'X' - eXit the program:".format(destination))
-                if n_seperator in 'Aa':
+                n_seperator = input("\nFolder {} already exists.\n\t'A' - Ignore all these Errors and skip creation of prior existing folders.\n\t'S' - Skip Just this one.\n\t'X' - eXit the program:".format(destination)).upper()
+                if n_seperator == 'A':
                     log_tools.add_to_txt_log('Folder {} exists and creation skipped (Ignore all activated).'.format(destination), add_date=True)
                     ignore_FileExistsError = True
                     return
-                elif n_seperator in 'Ss':
+                elif n_seperator == 'S':
                     log_tools.add_to_txt_log('Folder {} exists and creation skipped (one time).'.format(destination), add_date=True)
                     return
-                elif n_seperator in 'Xx':
+                elif n_seperator == 'X':
                     log_tools.add_to_txt_log('Folder {} exists and user quit.'.format(destination), add_date=True)
                     raise SystemExit
         else:
@@ -256,7 +257,6 @@ if __name__ == '__main__':
     if 'idlelib.run' in modules:
         use_progress_bar = False
     else:
-        import progressbar_control
 
         progressbar_control.setup_progressbar()
         use_progress_bar = True
@@ -315,23 +315,23 @@ if __name__ == '__main__':
             output += "\n\t'b' - Add another job.\n\t'r' - Remove a job."
         else:
             output += "\n\t'b' - Enter batch creation mode."
-        n_seperator = input("{}\n\t'e' - Enable/Dissable seperator at end.\n\t'z' - Enable/Dissable leading zero.\n\t'c' - Confirm current settings and Create Dolders.\n\t'x' - eXit the program\nThen 'Enter' to confirm:".format(output))
-        if n_seperator in 'cC':
+        n_seperator = input("{}\n\t'e' - Enable/Dissable seperator at end.\n\t'z' - Enable/Dissable leading zero.\n\t'c' - Confirm current settings and Create Folders.\n\t'x' - eXit the program\nThen 'Enter' to confirm:".format(output)).upper()
+        if n_seperator == 'C':
             break
-        elif n_seperator in 'eE':
+        elif n_seperator == 'E':
             if batch_mode and check_job_num() is False:
                 continue
             add_seperator_at_end[job_pos] = not add_seperator_at_end[job_pos]
-        elif n_seperator in 'pP':
+        elif n_seperator == 'P':
             if batch_mode and check_job_num() is False:
                 continue
             seperator[job_pos] = pick_seperator()
             common_name[job_pos] = add_seperator(seperator[job_pos], common_name[job_pos])
-        elif n_seperator in 'nN':
+        elif n_seperator == 'N':
             if batch_mode and check_job_num() is False:
                 continue
             common_name[job_pos] = pick_common_name(seperator[job_pos])
-        elif n_seperator in 'sS':
+        elif n_seperator == 'S':
             if batch_mode and check_job_num() is False:
                 continue
             start_num[job_pos] = pick_start_num()
@@ -340,7 +340,7 @@ if __name__ == '__main__':
                 start_num[job_pos] = pick_start_num()
             if leading_zero[job_pos] or length > len(start_num_string[job_pos]):
                 start_num_string[job_pos] = generate_start_num_string()
-        elif n_seperator in 'fF':
+        elif n_seperator == 'F':
             if batch_mode and check_job_num() is False:
                 continue
             return_tuple = pick_end_num()
@@ -349,7 +349,7 @@ if __name__ == '__main__':
             length = len(end_num_string[job_pos])
             if leading_zero[job_pos] and length != len(start_num_string[job_pos]):
                 start_num_string[job_pos] = generate_start_num_string()
-        elif n_seperator in 'zZ':
+        elif n_seperator == 'Z':
             if batch_mode and check_job_num() is False:
                 continue
             leading_zero[job_pos] = not leading_zero[job_pos]
@@ -357,7 +357,7 @@ if __name__ == '__main__':
                 start_num_string[job_pos] = generate_start_num_string()
             else:
                 start_num_string[job_pos] = str(start_num[job_pos])
-        elif n_seperator in 'bB':
+        elif n_seperator == 'B':
             batch_mode = True
             job_pos = len(start_num_string)
             destination_folder.append(pick_destination())
@@ -373,7 +373,7 @@ if __name__ == '__main__':
             leading_zero.append(True)
             start_num_string.append(generate_start_num_string())
             destination_folder[job_pos] += '\\'  # check use of length var
-        elif n_seperator in 'rR':
+        elif n_seperator == 'R':
             if batch_mode:
                 if check_job_num():
                     destination_folder.pop(job_pos)
@@ -392,7 +392,7 @@ if __name__ == '__main__':
                         job_pos = 0
             else:
                 print('You have not enabled batch mode')
-        elif n_seperator in 'xX':
+        elif n_seperator == 'X':
             log_tools.add_to_txt_log('User quit from confirmation menu.', add_date=True)
             raise SystemExit
 
