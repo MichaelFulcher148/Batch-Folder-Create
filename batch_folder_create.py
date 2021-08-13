@@ -11,7 +11,7 @@ from tools import log_tools, progressbar_control
 
     Send Donations to (recommended $1.50USD) -
     PayPal: mjfulcher58@gmail.com
-    Bitcoin: 3EjKSBQka7rHaLqKMXKZ8t7sHDa546GWAd
+    Bitcoin: 3DXiJxie6En3wcyxjmKZeY2zFLEmK8y42U
     Other options @ http://michaelfulcher.yolasite.com/
 """
 
@@ -261,7 +261,7 @@ if __name__ == '__main__':
         progressbar_control.setup_progressbar()
         use_progress_bar = True
 
-    print('Create Numbered Folder Series Script\n\tBy Michael Fulcher\nSend Donations to - PayPal: mjfulcher58@gmail.com or Bitcoin: 3EjKSBQka7rHaLqKMXKZ8t7sHDa546GWAd\nOther donation options @ http://michaelfulcher.yolasite.com/\n\n')
+    print('Create Numbered Folder Series Script\n\tBy Michael Fulcher\nSend Donations to - PayPal: mjfulcher58@gmail.com or Bitcoin: 3DXiJxie6En3wcyxjmKZeY2zFLEmK8y42U\nOther donation options @ http://michaelfulcher.yolasite.com/\n\n')
     destination_folder = list()
     destination_folder.append(pick_destination())
 
