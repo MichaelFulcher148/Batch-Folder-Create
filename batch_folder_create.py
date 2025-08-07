@@ -1,10 +1,10 @@
-from tools.generators import countup
-from tools.string import folder_name_char_check
+from code_tools import countup
+from code_tools import folder_name_char_check
 from os.path import exists
 from os import makedirs
 from sys import modules
 import time
-from tools import log_tools, progressbar_control
+import log_tools, progressbar_control
 
 """Batch Folder Create
     By Michael Fulcher
@@ -48,8 +48,8 @@ def pick_destination() -> str:
             return destination_folder
         else:
             if exists(destination_folder[0:3]):  # check that drive exists
-                print("\nFolder ({}) does not exist.".format(destination_folder))
-                n_seperator = input("Would you like to create this folder?\nNote: spaces at the begining and end of folder names cannot be used, they will be removed.\n'Y' for Yes, any other key to start over:").upper()
+                print(f"\nFolder ({destination_folder}) does not exist.")
+                n_seperator = input("Would you like to create this folder?\nNote: spaces at the beginning and end of folder names cannot be used, they will be removed.\n'Y' for Yes, any other key to start over:").upper()
                 if n_seperator == 'Y':
                     path_list = destination_folder.split('\\')
                     length = len(path_list)
@@ -65,7 +65,7 @@ def pick_destination() -> str:
                         if not folder_name_validity_check(path_list[w]):
                             return destination_folder
                         else:
-                            destination_folder += '\\{}'.format(path_list[w])
+                            destination_folder += f'\\{path_list[w]}'
                             if exists(destination_folder):
                                 folder_existed_count += 1
                                 w += 1
@@ -88,7 +88,7 @@ def pick_destination() -> str:
                                     makedir_n_iterate(destination_folder)
                                     log_tools.add_to_txt_log('Created ' + destination_folder, add_date = True)
                     if w == length:
-                        print("Created {} folders, {} Folders existed prior.".format(str(success), str(folder_existed_count)))
+                        print(f"Created {success} folders, {folder_existed_count} Folders existed prior.")
                         print("Destination folder {} Created.".format(destination_folder))
                         return destination_folder
             else:
@@ -257,7 +257,6 @@ if __name__ == '__main__':
     if 'idlelib.run' in modules:
         use_progress_bar = False
     else:
-
         progressbar_control.setup_progressbar()
         use_progress_bar = True
 
@@ -267,8 +266,7 @@ if __name__ == '__main__':
 
     seperator = list()
     seperator.append(pick_seperator())
-    common_name = list()
-    spaces_list = list()
+    common_name, spaces_list = [], []
     spaces_list.append(list())
 
     common_name.append(pick_common_name(seperator[job_pos]))
